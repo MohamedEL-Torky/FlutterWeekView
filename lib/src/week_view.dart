@@ -147,7 +147,7 @@ class _WeekViewState
       viewportFraction: 0.75,
     );
 
-    _today = widget.dates[0];
+    _today = widget.dates[1];
 
     dayViewWidth = widget.dayViewWidth;
     if (dayViewWidth != null) {
@@ -178,9 +178,30 @@ class _WeekViewState
     Widget weekViewStack = createWeekViewStack();
     if (widget.inScrollableWidget) {
       weekViewStack = NoGlowBehavior.noGlow(
-        child: SingleChildScrollView(
-          controller: widget.controller.verticalScrollController,
-          child: weekViewStack,
+        child: Column(
+          children: <Widget>[
+            Text(
+              monthFormater.format(_today),
+              style: monthFormater.format(_today) ==
+                      monthFormater.format(DateTime.now())
+                  ? todayStyle
+                  : otherDayStyle,
+            ),
+            Container(
+              height: 1,
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: widget.controller.verticalScrollController,
+                child: weekViewStack,
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -210,27 +231,12 @@ class _WeekViewState
   }
 
   TextStyle todayStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 27);
+      const TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.blue);
   TextStyle otherDayStyle = const TextStyle(fontSize: 25);
 
   /// Creates the week view stack.
   Widget createWeekViewStack() => Column(
         children: <Widget>[
-          Text(
-            monthFormater.format(_today),
-            style: monthFormater.format(_today) ==
-                    monthFormater.format(DateTime.now())
-                ? todayStyle
-                : otherDayStyle,
-          ),
-          Container(
-            height: 1,
-            width: double.infinity,
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            decoration: BoxDecoration(
-              color: Colors.grey,
-            ),
-          ),
           Row(
             children: [
               SingleChildScrollView(
