@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_week_view/src/controller.dart';
 import 'package:flutter_week_view/src/day_view.dart';
 import 'package:flutter_week_view/src/utils.dart';
+import 'package:intl/intl.dart';
 
 /// A widget which is showing both headers and can be zoomed.
 abstract class ZoomableHeadersWidget<C extends ZoomController> extends StatefulWidget {
@@ -238,7 +239,7 @@ class DayBar extends StatelessWidget {
         color: backgroundColor,
         child: Center(
           child: Text(
-            dateFormatter(date.year, date.month, date.day),
+            DateFormat("yMMMMd").format(date),
             style: textStyle ??
                 TextStyle(
                   color: Utils.sameDay(date) ? Colors.blue[800] : Colors.black54,

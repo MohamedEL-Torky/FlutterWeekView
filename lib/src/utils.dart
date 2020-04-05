@@ -80,6 +80,8 @@ class DefaultBuilders {
   /// Builds a date according to a list.
   static DateTime defaultDateCreator(List<DateTime> dates, int index) => dates[index];
 
+  static DateTime customDateCreator(DateTime date) => date;
+
   /// Builds a day view in order to put it in a week view.
   static DayView defaultDayViewBuilder(BuildContext context, WeekView weekView, DateTime date, DayViewController controller) => DayView(
         date: date,

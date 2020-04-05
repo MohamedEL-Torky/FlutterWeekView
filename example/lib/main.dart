@@ -39,7 +39,7 @@ class _FlutterWeekViewDemoApp extends StatelessWidget {
       );
 }
 
-/// The demo app body widget.
+/// The demo app body
 class _FlutterWeekViewDemoAppBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,8 @@ class _FlutterWeekViewDemoAppBody extends StatelessWidget {
             ),
             RaisedButton(
               child: const Text('Demo dynamic day view'),
-              onPressed: () => Navigator.pushNamed(context, '/dynamic-day-view'),
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/dynamic-day-view'),
             ),
             const Expanded(
               child: SizedBox.expand(),
@@ -96,7 +97,7 @@ class _FlutterWeekViewDemoAppBody extends StatelessWidget {
   }
 }
 
-/// The demo day view widget.
+/// The demo day view
 class _DemoDayView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -142,15 +143,71 @@ class _DemoDayView extends StatelessWidget {
   }
 }
 
-/// The demo week view widget.
-class _DemoWeekView extends StatelessWidget {
+/// The demo week view
+class _DemoWeekView extends StatefulWidget {
+  @override
+  __DemoWeekViewState createState() => __DemoWeekViewState();
+}
+
+class __DemoWeekViewState extends State<_DemoWeekView> {
+  void getNextDay(index) {
+    setState(() {
+      dates.add(
+        dates[index].add(
+          const Duration(days: 1),
+        ),
+      );
+    });
+  }
+
+  void getPreviousDay(index) {
+    setState(() {
+      dates.insert(
+        0,
+        dates[index].subtract(
+          const Duration(days: 1),
+        ),
+      );
+    });
+  }
+
+  void onPageChanged(page, PageController pageController) {
+    if (page == dates.length - 1) {
+      getNextDay(page);
+    }
+    if (page == 0) {
+      getPreviousDay(page);
+      pageController.jumpToPage(1);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    date = DateTime(now.year, now.month, now.day);
+    dates = [
+      date.subtract(
+        const Duration(days: 1),
+      ),
+      date,
+      date.add(
+        const Duration(days: 1),
+      ),
+    ];
+  }
+
+  DateTime now = DateTime.now();
+
+  DateTime date;
+
+  List<DateTime> dates;
+
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    DateTime date = DateTime(now.year, now.month, now.day);
     return WeekView(
       initialHour: 7,
-      dates: [date.subtract(const Duration(days: 1)), date, date.add(const Duration(days: 1))],
+      dates: dates,
+      onPageChange: onPageChanged,
       events: [
         FlutterWeekViewEvent(
           title: 'An event 1',
@@ -163,24 +220,6 @@ class _DemoWeekView extends StatelessWidget {
           description: 'A description 2',
           start: date.add(const Duration(hours: 19)),
           end: date.add(const Duration(hours: 22)),
-        ),
-        FlutterWeekViewEvent(
-          title: 'An event 3',
-          description: 'A description 3',
-          start: date.add(const Duration(hours: 23, minutes: 30)),
-          end: date.add(const Duration(hours: 25, minutes: 30)),
-        ),
-        FlutterWeekViewEvent(
-          title: 'An event 4',
-          description: 'A description 4',
-          start: date.add(const Duration(hours: 20)),
-          end: date.add(const Duration(hours: 21)),
-        ),
-        FlutterWeekViewEvent(
-          title: 'An event 5',
-          description: 'A description 5',
-          start: date.add(const Duration(hours: 20)),
-          end: date.add(const Duration(hours: 21)),
         ),
       ],
     );
@@ -209,7 +248,8 @@ class _DynamicDayViewState extends State<_DynamicDayView> {
           IconButton(
             onPressed: () {
               setState(() {
-                DateTime start = DateTime(now.year, now.month, now.day, Random().nextInt(24), Random().nextInt(60));
+                DateTime start = DateTime(now.year, now.month, now.day,
+                    Random().nextInt(24), Random().nextInt(60));
                 events.add(FlutterWeekViewEvent(
                   title: 'Event ' + (events.length + 1).toString(),
                   start: start,
