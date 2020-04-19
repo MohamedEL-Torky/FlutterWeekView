@@ -35,6 +35,9 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   final List<DateTime> dates;
 
+  final Color backgroundColor;
+  final Color lineColor;
+
   /// Creates a new week view instance.
   WeekView({
     List<FlutterWeekViewEvent> events,
@@ -42,6 +45,8 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
     @required this.dates,
     this.dayViewBuilder = DefaultBuilders.defaultDayViewBuilder,
     this.dayViewWidth,
+    this.backgroundColor,
+    this.lineColor,
     DateFormatter dateFormatter,
     HourFormatter hourFormatter,
     WeekViewController controller,
@@ -84,6 +89,8 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   /// Creates a new week view instance.
   WeekView.builder({
+    this.backgroundColor,
+    this.lineColor,
     this.dates,
     List<FlutterWeekViewEvent> events,
     this.dateCount,
@@ -192,7 +199,7 @@ class _WeekViewState
               width: double.infinity,
               margin: const EdgeInsets.only(top: 10, bottom: 10),
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: widget.lineColor ?? Colors.grey,
               ),
             ),
             Expanded(
@@ -230,8 +237,8 @@ class _WeekViewState
     return Container();
   }
 
-  TextStyle todayStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.blue);
+  TextStyle todayStyle = const TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 25, color: Colors.blue);
   TextStyle otherDayStyle = const TextStyle(fontSize: 25);
 
   /// Creates the week view stack.
@@ -246,71 +253,75 @@ class _WeekViewState
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
-                      height: calculateHeight(),
-                      width: dayViewWidth,
-                      child: PageView.builder(
-                        physics: widget.inScrollableWidget
-                            ? MagnetScrollPhysics(itemSize: dayViewWidth)
-                            : const NeverScrollableScrollPhysics(),
-                        itemCount: widget.dates.length,
-                        scrollDirection: Axis.horizontal,
-                        controller: _pageController,
-                        onPageChanged: (page) {
-                          setState(() {
-                            _today = widget.dates[page];
-                            widget.onPageChange(page, _pageController);
-                          });
-                        },
-                        itemBuilder: (BuildContext buildContext, int index) {
-                          return AnimatedBuilder(
-                            animation: _pageController,
-                            child: itemBuilder(context, index),
-                            builder: (BuildContext context, child) {
-                              // on the first render, the pageController.page is null,
-                              // this is a dirty hack
-                              if (_pageController.position.minScrollExtent ==
-                                      null ||
-                                  _pageController.position.maxScrollExtent ==
-                                      null) {
-                                Future.delayed(const Duration(microseconds: 1),
-                                    () {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                                return Container();
-                              }
-                              double value = _pageController.page - index;
-                              value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
+                    Container(
+                      color: widget.backgroundColor,
+                      child: SizedBox(
+                        height: calculateHeight(),
+                        width: dayViewWidth,
+                        child: PageView.builder(
+                          physics: widget.inScrollableWidget
+                              ? MagnetScrollPhysics(itemSize: dayViewWidth)
+                              : const NeverScrollableScrollPhysics(),
+                          itemCount: widget.dates.length,
+                          scrollDirection: Axis.horizontal,
+                          controller: _pageController,
+                          onPageChanged: (page) {
+                            setState(() {
+                              _today = widget.dates[page];
+                              widget.onPageChange(page, _pageController);
+                            });
+                          },
+                          itemBuilder: (BuildContext buildContext, int index) {
+                            return AnimatedBuilder(
+                              animation: _pageController,
+                              child: itemBuilder(context, index),
+                              builder: (BuildContext context, child) {
+                                // on the first render, the pageController.page is null,
+                                // this is a dirty hack
+                                if (_pageController.position.minScrollExtent ==
+                                        null ||
+                                    _pageController.position.maxScrollExtent ==
+                                        null) {
+                                  Future.delayed(
+                                      const Duration(microseconds: 1), () {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  });
+                                  return Container();
+                                }
+                                double value = _pageController.page - index;
+                                value =
+                                    (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
 
-                              final double height = calculateHeight();
-                              final double distortionValue =
-                                  Curves.easeOut.transform(value);
+                                final double height = calculateHeight();
+                                final double distortionValue =
+                                    Curves.easeOut.transform(value);
 
-                              return Column(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: distortionValue * height,
-                                        child: Card(
-                                          child: Container(
-                                            child: createDayView(index),
+                                return Column(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: distortionValue * height,
+                                          child: Card(
+                                            child: Container(
+                                              child: createDayView(index),
+                                            ),
+                                            elevation:
+                                                _pageController.page == index
+                                                    ? 7
+                                                    : 0,
                                           ),
-                                          elevation:
-                                              _pageController.page == index
-                                                  ? 7
-                                                  : 0,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
