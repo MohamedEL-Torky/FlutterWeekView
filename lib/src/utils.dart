@@ -117,7 +117,8 @@ class DefaultBuilders {
 
   /// Builds a day view in order to put it in a week view.
   static DayView defaultDayViewBuilder(BuildContext context, WeekView weekView,
-          DateTime date, DayViewController controller) =>
+          DateTime date, DayViewController controller,
+          {@required Color daysColor, @required Color sameDayColor}) =>
       DayView(
         date: date,
         events: weekView.events,
@@ -127,6 +128,8 @@ class DefaultBuilders {
         dayBarHeight: 0,
         userZoomable: false,
         scrollToCurrentTime: false,
+        daysColor: daysColor,
+        sameDayColor: sameDayColor,
       );
 
   /// Builds a day bar in order to put it in a week view.

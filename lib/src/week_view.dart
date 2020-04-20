@@ -9,7 +9,8 @@ import 'package:intl/intl.dart';
 
 /// Builds a day view.
 typedef DayViewBuilder = DayView Function(BuildContext context,
-    WeekView weekView, DateTime date, DayViewController dayViewController);
+    WeekView weekView, DateTime date, DayViewController dayViewController,
+    {@required Color daysColor, @required Color sameDayColor});
 
 /// Creates a date according to the specified index.
 typedef DateCreator = DateTime Function(int index);
@@ -38,8 +39,13 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
   final Color backgroundColor;
   final Color lineColor;
 
+  final Color sameDayColor;
+  final Color daysColor;
+
   /// Creates a new week view instance.
   WeekView({
+    @required this.sameDayColor,
+    @required this.daysColor,
     List<FlutterWeekViewEvent> events,
     @required this.onPageChange,
     @required this.dates,
@@ -89,6 +95,8 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   /// Creates a new week view instance.
   WeekView.builder({
+    @required this.sameDayColor,
+    @required this.daysColor,
     this.backgroundColor,
     this.lineColor,
     this.dates,
@@ -335,8 +343,14 @@ class _WeekViewState
   /// Creates the day view at the specified index.
   Widget createDayView(int index) => SizedBox(
         width: dayViewWidth,
-        child: widget.dayViewBuilder(context, widget, widget.dateCreator(index),
-            widget.controller.dayViewControllers[index]),
+        child: widget.dayViewBuilder(
+          context,
+          widget,
+          widget.dateCreator(index),
+          widget.controller.dayViewControllers[index],
+          daysColor: widget.daysColor,
+          sameDayColor: widget.sameDayColor,
+        ),
       );
 
   @override

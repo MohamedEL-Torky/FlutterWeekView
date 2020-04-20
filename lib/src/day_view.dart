@@ -36,8 +36,14 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
   /// The current time circle color.
   final Color currentTimeCircleColor;
 
+  final Color daysColor;
+
+  final Color sameDayColor;
+
   /// Creates a new day view instance.
   DayView({
+    @required this.daysColor,
+    @required this.sameDayColor,
     List<FlutterWeekViewEvent> events,
     @required DateTime date,
     EventsColumnBackgroundPainter eventsColumnBackgroundPainter,
@@ -63,8 +69,8 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
         eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ??
             EventsColumnBackgroundPainter(
                 backgroundColor: Utils.sameDay(date)
-                    ? const Color(0xFFE3F5FF)
-                    : const Color(0xFFF2F2F2)),
+                    ? sameDayColor
+                    :  daysColor),
         events = events ?? [],
         super(
           controller: controller ?? DayViewController(),
@@ -117,6 +123,7 @@ class _DayViewState
     reset();
     createEventsDrawProperties();
   }
+
   //TODO : important day builder
   @override
   Widget build(BuildContext context) {

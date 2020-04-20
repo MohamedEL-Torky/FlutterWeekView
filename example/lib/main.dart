@@ -202,6 +202,8 @@ class __DemoWeekViewState extends State<_DemoWeekView> {
   Widget build(BuildContext context) {
     return WeekView(
       initialHour: 7,
+      sameDayColor: Colors.black,
+      daysColor: Colors.blue,
       dates: dates,
       onPageChange: onPageChanged,
       events: [
