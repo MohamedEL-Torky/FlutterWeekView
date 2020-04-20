@@ -42,8 +42,13 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
   final Color sameDayColor;
   final Color daysColor;
 
+  final TextStyle sameDaytitleStyle;
+  final TextStyle otherDaytitleStyle;
+
   /// Creates a new week view instance.
   WeekView({
+    this.otherDaytitleStyle,
+    this.sameDaytitleStyle,
     @required this.sameDayColor,
     @required this.daysColor,
     List<FlutterWeekViewEvent> events,
@@ -95,6 +100,8 @@ class WeekView extends ZoomableHeadersWidget<WeekViewController> {
 
   /// Creates a new week view instance.
   WeekView.builder({
+    this.otherDaytitleStyle,
+    this.sameDaytitleStyle,
     @required this.sameDayColor,
     @required this.daysColor,
     this.backgroundColor,
@@ -154,9 +161,16 @@ class _WeekViewState
   /// A day view width.
   double dayViewWidth;
 
+  static TextStyle todayStyle;
+  TextStyle otherDayStyle = const TextStyle(fontSize: 25);
+
   @override
   void initState() {
     super.initState();
+    otherDayStyle = widget.otherDaytitleStyle ?? const TextStyle(fontSize: 25);
+    todayStyle = widget.sameDaytitleStyle ??
+        const TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 25, color: Colors.blue);
     _pageController = PageController(
       initialPage: 1,
       viewportFraction: 0.75,
@@ -244,10 +258,6 @@ class _WeekViewState
   dynamic itemBuilder(c, i) {
     return Container();
   }
-
-  TextStyle todayStyle = const TextStyle(
-      fontWeight: FontWeight.bold, fontSize: 25, color: Colors.blue);
-  TextStyle otherDayStyle = const TextStyle(fontSize: 25);
 
   /// Creates the week view stack.
   Widget createWeekViewStack() => Column(
