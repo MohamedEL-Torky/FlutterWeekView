@@ -200,8 +200,8 @@ class _DayViewState
       height: calculateHeight(),
       child: Stack(
         children: [
-          ...timeBoxChildren,
           createBackground(),
+          ...timeBoxChildren,
           ...children,
         ],
       ),

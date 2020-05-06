@@ -209,9 +209,9 @@ class __DemoWeekViewState extends State<_DemoWeekView> {
           isTimeBox: true,
           title: 'Time Box',
           description: '',
-          start: date,
+          start: date.add(const Duration(hours: 6, minutes: 30)),
           backgroundColor: Colors.black.withOpacity(0.2),
-          end: date.add(const Duration(hours: 18, minutes: 30)),
+          end: date.add(const Duration(hours: 12, minutes: 30)),
         ),
         FlutterWeekViewEvent(
           title: 'An event 1',
