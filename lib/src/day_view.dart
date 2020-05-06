@@ -68,9 +68,8 @@ class DayView extends ZoomableHeadersWidget<DayViewController> {
         date = DateTime(date.year, date.month, date.day),
         eventsColumnBackgroundPainter = eventsColumnBackgroundPainter ??
             EventsColumnBackgroundPainter(
-                backgroundColor: Utils.sameDay(date)
-                    ? sameDayColor
-                    :  daysColor),
+                backgroundColor:
+                    Utils.sameDay(date) ? sameDayColor : daysColor),
         events = events ?? [],
         super(
           controller: controller ?? DayViewController(),
@@ -170,9 +169,16 @@ class _DayViewState
 
   /// Creates the main widget, with a hours column and an events column.
   Widget createMainWidget() {
-    List<Widget> children = eventsDrawProperties.entries
-        .map((entry) => entry.value.createWidget(context, widget, entry.key))
-        .toList();
+    List<Widget> timeBoxChildren = [];
+    List<Widget> children = eventsDrawProperties.entries.map((entry) {
+      if (entry.key.isTimeBox) {
+        timeBoxChildren
+            .add(entry.value.createWidget(context, widget, entry.key));
+        return Container();
+      } else {
+        return entry.value.createWidget(context, widget, entry.key);
+      }
+    }).toList();
     if (widget.hoursColumnWidth > 0) {
       children.add(
         Positioned(
@@ -189,10 +195,16 @@ class _DayViewState
         children.add(createCurrentTimeCircle());
       }
     }
-
+    //TODO: come back here
     Widget mainWidget = SizedBox(
       height: calculateHeight(),
-      child: Stack(children: children..insert(0, createBackground())),
+      child: Stack(
+        children: [
+          ...timeBoxChildren,
+          createBackground(),
+          ...children,
+        ],
+      ),
     );
 
     if (widget.inScrollableWidget) {
@@ -281,6 +293,7 @@ class _DayViewState
       double eventsColumnWidth =
           (context.findRenderObject() as RenderBox).size.width -
               widget.hoursColumnWidth;
+      _EventDrawProperties.maxWidth = eventsColumnWidth;
       eventsGrid.processEvents(widget.hoursColumnWidth, eventsColumnWidth);
     }
   }
@@ -432,6 +445,8 @@ class _EventDrawProperties {
   /// The end time.
   DateTime end;
 
+  static double maxWidth;
+
   /// Creates a new flutter week view event draw properties from the specified day view and the specified day view event.
   _EventDrawProperties(DayView dayView, FlutterWeekViewEvent event) {
     if (shouldDraw ||
@@ -477,8 +492,8 @@ class _EventDrawProperties {
       Positioned(
         top: top,
         height: height,
-        left: left,
-        width: width,
+        left: event.isTimeBox ? 0 : left,
+        width: event.isTimeBox ? maxWidth : width,
         child: event.build(context, dayView, height, width),
       );
 }

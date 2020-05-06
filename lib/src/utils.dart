@@ -75,9 +75,9 @@ class DefaultBuilders {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       TextSpan(
-        text: '\n' +
+        text: '\n${event.isTimeBox ? '\n' : ''}' +
             dayView.hourFormatter(event.start.hour, event.start.minute) +
-            ' - ' +
+            '${event.isTimeBox ? '\n' : ''} - ${event.isTimeBox ? '\n' : ''}' +
             dayView.hourFormatter(event.end.hour, event.end.minute) +
             '\n\n',
       ),

@@ -42,8 +42,11 @@ class FlutterWeekViewEvent extends Comparable<FlutterWeekViewEvent> {
   /// The event text builder.
   final EventTextBuilder eventTextBuilder;
 
+  final bool isTimeBox;
+
   /// Creates a new flutter week view event instance.
   FlutterWeekViewEvent({
+    this.isTimeBox = false,
     @required this.title,
     @required this.description,
     @required DateTime start,

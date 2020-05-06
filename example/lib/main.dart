@@ -202,15 +202,21 @@ class __DemoWeekViewState extends State<_DemoWeekView> {
   Widget build(BuildContext context) {
     return WeekView(
       initialHour: 7,
-      sameDayColor: Colors.black,
-      daysColor: Colors.blue,
       dates: dates,
       onPageChange: onPageChanged,
       events: [
         FlutterWeekViewEvent(
+          isTimeBox: true,
+          title: 'Time Box',
+          description: '',
+          start: date,
+          backgroundColor: Colors.black.withOpacity(0.2),
+          end: date.add(const Duration(hours: 18, minutes: 30)),
+        ),
+        FlutterWeekViewEvent(
           title: 'An event 1',
           description: 'A description 1',
-          start: date.subtract(const Duration(hours: 1)),
+          start: date.add(const Duration(hours: 2)),
           end: date.add(const Duration(hours: 18, minutes: 30)),
         ),
         FlutterWeekViewEvent(
